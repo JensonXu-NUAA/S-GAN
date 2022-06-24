@@ -1,0 +1,81 @@
+<html>
+<head>
+	<meta http-equiv = "Content-Type" content="text/html; charset=utf-8" />
+	<meta name = "viewport" content="initial-scale=1.0, user-scalable=no" />
+	<script type = "text/javascript" src="//api.map.baidu.com/api?type=webgl&v=3.0&ak=Zmxu5ubPwE0pKDwwguK3UpKIwtyPjA6K"></script>
+    <title>STITP</title>
+    <style type="text/css">
+		body, 
+        html,
+        #allmap 
+        {
+            width: 100%;
+            height: 100%; 
+            margin: 0;
+            font-family:"微软雅黑";
+        }
+		#l-map
+        {
+            height: 70%;
+            width: 100%;
+        }
+		#r-result
+        {
+            width: 100%; 
+            font-size: 14px; 
+            line-height: 20px;
+        }
+	</style>
+</head>
+<body>
+	<div id = "l-map"></div>
+	<div id = "r-result"></div>
+</body>
+</html>
+<script type="text/javascript">
+    var radius = 10000;  //搜索半径
+	// 百度地图API功能
+	var map = new BMapGL.Map("l-map");
+  	var point = new BMapGL.Point(114.729487,36.540976);
+    map.enableScrollWheelZoom();  //允许滚轮缩放
+	map.centerAndZoom(point, 11);
+
+	var options = 
+    {
+		onSearchComplete: function(results)
+        {
+			// 判断状态是否正确
+			if (local.getStatus() == BMAP_STATUS_SUCCESS)
+            {
+				var s = [];
+                var num = results.getCurrentNumPois();
+
+				for (var i = 0; i < num; i ++)
+                {
+					s.push(results.getPoi(i).title + ";" + results.getPoi(i).point.lng.toFixed(6) + "," 
+                           + results.getPoi(i).point.lat.toFixed(6)
+                           + ";" + results.getPoi(i).address);
+				}
+
+				document.getElementById("r-result").innerHTML = s.join("<br/>");
+			}
+		}
+	};
+
+    var optionsCircle = 
+    {
+        fillColor:"blue", 
+        strokeWeight: 1 ,
+        fillOpacity: 0.3, 
+        strokeOpacity: 0.3
+    }
+
+    //显示结果列表
+	var local = new BMapGL.LocalSearch(map, options);
+	local.searchNearby("村", point, radius);
+    //标记
+    var circle = new BMapGL.Circle(point, radius, optionsCircle);
+    map.addOverlay(circle);
+    var mlocal =  new BMapGL.LocalSearch(map, {renderOptions: {map: map, autoViewport: false}});  
+    mlocal.searchNearby("村", point, radius);
+</script>
