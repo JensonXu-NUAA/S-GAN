@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-
 # Generative Adversarial Networks (GAN) example in PyTorch. Tested with PyTorch 0.4.1, Python 3.6.7 (Nov 2018)
-# See related blog post at https://medium.com/@devnag/generative-adversarial-networks-gans-in-50-lines-of-code-pytorch-e81b79659e3f#.sch4xgsa9
 
 import numpy as np
 import torch
@@ -16,15 +13,10 @@ except ImportError:
   print("Will skip plotting; matplotlib is not available.")
   matplotlib_is_available = False
 
-# ### Uncomment only one of these to define what data is actually sent to the Discriminator
-#(name, preprocess, d_input_func) = ("Raw data", lambda data: data, lambda x: x)
-#(name, preprocess, d_input_func) = ("Data and variances", lambda data: decorate_with_diffs(data, 2.0), lambda x: x * 2)
-#(name, preprocess, d_input_func) = ("Data and diffs", lambda data: decorate_with_diffs(data, 1.0), lambda x: x * 2)
 (name, preprocess, d_input_func) = ("Only 4 moments", lambda data: get_moments(data), lambda x: 4)
-
 print("Using data [%s]" % (name))
 
-# ##### DATA: Target data and generator input data
+# DATA: Target data and generator input data
 
 def get_distribution_sampler(mu, sigma):
     return lambda n: torch.Tensor(np.random.normal(mu, sigma, (1, n)))  # Gaussian
@@ -32,7 +24,7 @@ def get_distribution_sampler(mu, sigma):
 def get_generator_input_sampler():
     return lambda m, n: torch.rand(m, n)  # Uniform-dist data into generator, _NOT_ Gaussian
 
-# ##### MODELS: Generator model and discriminator model
+# MODELS: Generator model and discriminator model
 
 class Generator(nn.Module):
     def __init__(self, input_size, hidden_size, output_size, f):
